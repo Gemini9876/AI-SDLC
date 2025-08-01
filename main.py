@@ -1,4 +1,3 @@
-```python
 import os
 import secrets
 from datetime import datetime, timedelta
@@ -877,4 +876,3 @@ if __name__ == '__main__':
     with app.app_context():
         create_tables() 
     app.run(debug=True) # debug=True is for development, use a WSGI server for production (e.g., Gunicorn)
-```
