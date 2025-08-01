@@ -1,8 +1,5 @@
-flask
-functools
+Flask
+Flask-SQLAlchemy
+PyJWT
 pyotp
-jwt
-flask_sqlalchemy
-werkzeug
-secrets
-datetime
+python-dotenv
