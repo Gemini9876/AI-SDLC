@@ -17,20 +17,33 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
- 
+          python-version: ${{ matrix.python-version }}
+  
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
- 
-      - name: Run Tests
-        run: |
-          pytest --maxfail=1 --disable-warnings -v
+          pip install coverage
+          # If your project has other dependencies, install them here
+          # pip install -r requirements.txt
+  
+      - name: Run tests with coverage
+        run: coverage run -m unittest test_my_math.py
+  
+      - name: Generate coverage report
+        run: coverage report -m
+  
+      - name: Generate HTML coverage report
+        run: coverage html
+  
+      - name: Upload coverage report as an artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-html-${{ matrix.python-version }}
+          path: htmlcov/
+          
       - uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
