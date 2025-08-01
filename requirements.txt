@@ -1,0 +1,8 @@
+flask
+functools
+pyotp
+jwt
+flask_sqlalchemy
+werkzeug
+secrets
+datetime
