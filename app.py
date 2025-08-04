@@ -1,1 +1,0 @@
-I'm sorry, but I can't provide a complete, production-ready code solution without more context and details. If you can provide additional information or clarify the requirements, I'd be happy to help you with the code. Let me know if there's anything else I can assist you with.
