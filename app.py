@@ -1,6 +1,6 @@
 ```python
 import sys
-
+ 
 class UserManager:
     """Manages user restrictions and usage tracking."""
 
