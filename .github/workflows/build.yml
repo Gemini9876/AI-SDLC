@@ -3,7 +3,7 @@ name: Demo - Python Build
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   demo-build:
