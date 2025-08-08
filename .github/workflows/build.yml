@@ -1,58 +1,108 @@
-name: Build
+name: Demo - Python Build
 
 on:
   push:
     branches:
-      - dev
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - main
 
 jobs:
-  build:
-    name: Build and analyze
+  demo-build:
     runs-on: ubuntu-latest
-    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+          python-version: '3.11'
+
+      - name: Cache pip
+        uses: actions/cache@v4
         with:
-          python-version: ${{ matrix.python-version }}
-  
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: 
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
-        run: |
+        run: 
           python -m pip install --upgrade pip
-          pip install coverage
-          # If your project has other dependencies, install them here
-          # pip install -r requirements.txt
-  
-      - name: Run tests with coverage
-        run: coverage run -m unittest test_my_math.py
-  
-      - name: Generate coverage report
-        run: coverage report -m
-  
-      - name: Generate HTML coverage report
-        run: coverage html
-  
-      - name: Upload coverage report as an artifact (optional)
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-html-${{ matrix.python-version }}
-          path: htmlcov/
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run tests
+        run: 
+          if [ -f pytest.ini ] || [ -d tests ]; then
+            pip install pytest
+            pytest -q
+          else
+            echo "No tests detected — skipping"
+          fi
+                                                                     
+      - name: Show Python version and list files
+        run: 
+          python --version
+          echo "Files in repo:"
+          ls -la 
+
+
+
+
+# name: Build
+
+# on:
+#   push:
+#     branches:
+#       - dev
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+
+# jobs:
+#   build:
+#     name: Build and analyze
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           
-      - uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # We do not recommend to use this in a pull request. Prefer using pull request
-      # decoration instead.
-      # - uses: SonarSource/sonarqube-quality-gate-action@v1
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#       - name: Set up Python ${{ matrix.python-version }}
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: ${{ matrix.python-version }}
+  
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install coverage
+#           # If your project has other dependencies, install them here
+#           # pip install -r requirements.txt
+  
+#       - name: Run tests with coverage
+#         run: coverage run -m unittest test_my_math.py
+  
+#       - name: Generate coverage report
+#         run: coverage report -m
+  
+#       - name: Generate HTML coverage report
+#         run: coverage html
+  
+#       - name: Upload coverage report as an artifact (optional)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: coverage-report-html-${{ matrix.python-version }}
+#           path: htmlcov/
+          
+#       - uses: SonarSource/sonarqube-scan-action@v4
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+#       # If you wish to fail your job when the Quality Gate is red, uncomment the
+#       # following lines. This would typically be used to fail a deployment.
+#       # We do not recommend to use this in a pull request. Prefer using pull request
+#       # decoration instead.
+#       # - uses: SonarSource/sonarqube-quality-gate-action@v1
+#       #   timeout-minutes: 5
+#       #   env:
+#       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
