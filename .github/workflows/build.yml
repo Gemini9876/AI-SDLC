@@ -29,14 +29,14 @@ jobs:
         run: python -m pip install --upgrade pip && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
 
-      - name: Run tests
-        run: 
-          if [ -f pytest.ini ] || [ -d tests ]; then
-            pip install pytest
-            pytest -q
-          else
-            echo "No tests detected — skipping"
-          fi
+      # - name: Run tests
+      #   run: 
+      #     if [ -f pytest.ini ] || [ -d tests ]; then
+      #       pip install pytest
+      #       pytest -q
+      #     else
+      #       echo "No tests detected — skipping"
+      #     fi
       
       - name: Run tests with coverage
         run: coverage run -m unittest test_my_math.py
